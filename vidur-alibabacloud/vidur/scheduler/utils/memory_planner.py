@@ -73,9 +73,20 @@ class MemoryPlanner:
 
     # TODO(tianhao909): re-verify KV cache calc for DeepSeek/Qwen3
     # TODO(tianhao909): 重新核实 DeepSeek/Qwen3 的 KV Cache 计算方法
-    # TODO(tianhao909): use per-request prefill/decode seq_len for PD separation
-    # TODO(tianhao909): PD 分离时传入不同 req 的 prefill_input_seq_len 和 decode_output_seq_len
-    # TODO(tianhao909): optimize from static to dynamic token allocation
+    # TODO(tianhao909): use per-request prefill/decode seq_len for PD separation.
+    # Currently prefill_input_seq_len and decode_output_seq_len are hardcoded to 1,
+    # which significantly underestimates KV cache memory per request.
+    # In production, a single request may have thousands of tokens.
+    # Fixing this requires passing actual seq_len from the request generator or
+    # using config-level max_prefill_tokens / max_decode_tokens.
+    # This is an architectural change that affects the entire memory planning pipeline.
+    # TODO(tianhao909): PD 分离时应传入不同 req 的实际 prefill_input_seq_len 和 decode_output_seq_len。
+    # 当前硬编码 seq_len=1 会严重低估每请求的 KV cache 内存。
+    # 实际场景中单个请求可能有数千个 token。
+    # 修复此问题需要从请求生成器传入实际 seq_len，或使用配置级的 max_prefill_tokens / max_decode_tokens。
+    # 这是一个影响整个内存规划流程的架构变更。
+    # TODO(tianhao909): optimize from static to dynamic token allocation.
+    # Currently allocates by max_request_tokens statically, could be optimized to dynamic allocation.
     # TODO(tianhao909): 目前按 max_request_tokens 静态分配，后续可优化为动态分配
     def _get_kv_cache_memory_per_layer_per_request(self) -> int:
         """Calculate KV cache memory per layer per request (bytes).
@@ -84,14 +95,14 @@ class MemoryPlanner:
         # 当前仅 DeepSeek-671B 使用 MLA KV Cache
         if self._replica_config.model_name in ['deepseek-671B']:
             kvcache_size_all_layers_per_token = self.get_mla_kvcache_size(self._replica_config.model_config, self.use_fp8)
-            kvcache_size_per_layer_per_token = kvcache_size_all_layers_per_token / self._replica_config.model_config.num_hidden_layers
+            kvcache_size_per_layer_per_token = kvcache_size_all_layers_per_token // self._replica_config.model_config.num_hidden_layers
             prefill_input_seq_len = 1
             decode_output_seq_len = 1
             kvcache_size_per_layer_per_req = kvcache_size_per_layer_per_token * (prefill_input_seq_len + decode_output_seq_len)
             return kvcache_size_per_layer_per_req
         elif self._replica_config.model_name in ['qwen3-moe-235B', 'qwen3-next-80B']:
             kvcache_size_all_layers_per_token = self.get_mha_kvcache_size(self._replica_config.model_config, self.use_fp8)
-            kvcache_size_per_layer_per_token = kvcache_size_all_layers_per_token / self._replica_config.model_config.num_hidden_layers
+            kvcache_size_per_layer_per_token = kvcache_size_all_layers_per_token // self._replica_config.model_config.num_hidden_layers
             prefill_input_seq_len = 1
             decode_output_seq_len = 1
             kvcache_size_per_layer_per_req = kvcache_size_per_layer_per_token * (prefill_input_seq_len + decode_output_seq_len)
@@ -229,7 +240,14 @@ class MemoryPlanner:
             )
             
             # Return prefill max requests as system upper bound
+            # In PD disaggregation, prefill and decode clusters are scheduled independently,
+            # each with its own capacity. We return prefill's max requests here.
+            # Note: decode_num_requests may be smaller, but since the two clusters
+            # operate independently, each cluster uses its own limit for scheduling.
             # 返回Prefill的最大请求数 (作为系统上限)
+            # PD分离下，prefill 和 decode 集群独立调度，各自有各自的容量上限。
+            # 注意：decode_num_requests 可能更小，但由于两个集群独立运行，
+            # 各集群调度时使用各自的上限。
             return int(prefill_num_requests)
         else:
             parameter_memory_per_device  = self._get_parameter_memory_per_device()

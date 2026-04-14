@@ -127,6 +127,36 @@ pip install -r requirements-dev.txt -i https://mirrors.aliyun.com/pypi/simple/
 
 ---
 
+### 5. Data Preparation
+
+The examples below use trace files from `data/processed_traces/`. These files are provided by the upstream [microsoft/vidur](https://github.com/microsoft/vidur) project.
+
+**Option A**: Clone upstream vidur and copy the trace files:
+
+```bash
+git clone https://github.com/microsoft/vidur.git /tmp/vidur
+cp -r /tmp/vidur/data/processed_traces ./data/
+```
+
+**Option B**: If you already have the vidur data locally:
+
+```bash
+cp -r /path/to/vidur/data/processed_traces ./data/
+```
+
+After preparation, your directory structure should look like:
+
+```
+data/
+├── processed_traces/
+│   ├── splitwise_conv.csv
+│   ├── splitwise_code.csv
+│   └── arxiv_summarization_stats_llama2_tokenizer_filtered_v2.csv
+└── hf_configs/   # Already included in this repo
+```
+
+---
+
 ## ▶️ Running Examples
 
 ### Run DeepSeek-671B with AICB

@@ -115,7 +115,7 @@ class Simulator:
             _GLOBAL_AICB_CACHE.print_stats()
             _GLOBAL_AICB_CACHE.save_lookup_table()
         except Exception as e:
-            print(f"[WARNING] Cannot print AICB cache stats (无法打印AICB缓存统计): {e}")
+            logger.warning(f"Cannot print AICB cache stats (无法打印AICB缓存统计): {e}")
 
     def _write_output(self) -> None:
         logger.info("Writing output")

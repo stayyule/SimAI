@@ -7,5 +7,6 @@ class DeviceSKUType(BaseIntEnum):
     H100 = 3
     H800 = 4
     H20 = 5
-    H200 = 6
-    GB200 = 7
+    # NOTE: untested, for reference only (未经测试，仅供参考)
+    # H200 = 6
+    # GB200 = 7

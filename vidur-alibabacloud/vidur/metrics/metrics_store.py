@@ -300,8 +300,7 @@ class MetricsStore:
                 y=list(data.values()),
                 labels={"x": x_label, "y": y_label},
             )
-            fig.write_image(f"{base_path}/{plot_name}.png")
-            _safe_write_image(fig, f"{base_path}/{plot_name}.png") # qoder
+            _safe_write_image(fig, f"{base_path}/{plot_name}.png")
 
     def _store_operation_metrics(self, base_plot_path: str):
         if not self._config.store_operation_metrics:

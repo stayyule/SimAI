@@ -63,25 +63,27 @@ class H800DeviceSKUConfig(BaseDeviceSKUConfig):
     @staticmethod
     def get_type():
         return DeviceSKUType.H800
-    
-@dataclass
-class H200DeviceSKUConfig(BaseDeviceSKUConfig):
-    fp16_tflops: int = 989
-    fp8_tflops: int = 1979
-    total_memory_gb: int = 141
 
-    @staticmethod
-    def get_type():
-        return DeviceSKUType.H200
+# NOTE: untested, for reference only (未经测试，仅供参考)
+# @dataclass
+# class H200DeviceSKUConfig(BaseDeviceSKUConfig):
+#     fp16_tflops: int = 989
+#     fp8_tflops: int = 1979
+#     total_memory_gb: int = 141
+#
+#     @staticmethod
+#     def get_type():
+#         return DeviceSKUType.H200
     
 
 # GB200 NVL72  
-@dataclass
-class GB200DeviceSKUConfig(BaseDeviceSKUConfig):
-    fp16_tflops: int = 2500
-    fp8_tflops: int = 5000
-    total_memory_gb: int = 192
-
-    @staticmethod
-    def get_type():
-        return DeviceSKUType.GB200
+# NOTE: untested, for reference only (未经测试，仅供参考)
+# @dataclass
+# class GB200DeviceSKUConfig(BaseDeviceSKUConfig):
+#     fp16_tflops: int = 2500
+#     fp8_tflops: int = 5000
+#     total_memory_gb: int = 192
+#
+#     @staticmethod
+#     def get_type():
+#         return DeviceSKUType.GB200

@@ -484,8 +484,11 @@ class ReplicaConfig:
     pd_p2p_comm_dtype: str = field(
         default='float16',
         metadata={
-            "help": "Data type for PD disaggregation P2P communication.",
-            "choices": ['fp8', 'float16', 'float32', 'float64', 'bfloat16', 'int8', 'int16', 'int32', 'int64'],
+            "help": "Data type for PD disaggregation P2P communication. "
+                    "Tested: fp8, float16, float32. "
+                    "Other dtypes (float64, bfloat16, int8, int16, int32, int64) are "
+                    "theoretically supported but untested.",
+            "choices": ['fp8', 'float16', 'float32'],
         },
     )
     

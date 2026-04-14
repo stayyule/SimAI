@@ -681,6 +681,14 @@ class SklearnExecutionTimePredictor(BaseExecutionTimePredictor):
         return models
 
     def _predict_for_compute_models_by_aicb(self) -> Dict[str, Any]:
+        # NOTE: AICB backend uses empirical linear formulas (time = a * batch_size + b)
+        # instead of ML model predictions. These formulas are derived from profiling data
+        # on specific hardware (H20) and represent the designed approach for AICB backend,
+        # not a temporary placeholder.
+        # 注意: AICB 后端使用基于经验的线性公式 (time = a * batch_size + b)
+        # 代替 ML 模型预测。这些公式来自特定硬件 (H20) 的 profiling 数据，
+        # 是 AICB 后端的设计方案，而非临时占位代码。
+        
         # Store prediction results / 存储预测结果
         predictions = {}
 
@@ -1291,7 +1299,7 @@ class SklearnExecutionTimePredictor(BaseExecutionTimePredictor):
             return 0
 
         kv_cache_sizes, prefill_chunk_sizes = zip(*prefill_params)
-        print(len(prefill_chunk_sizes))
+        logger.debug(f"prefill_chunk_sizes length: {len(prefill_chunk_sizes)}")
 
         agg_kv_cache_size = sum(kv_cache_sizes)
         agg_prefill_chunk_size = sum([x**2 for x in prefill_chunk_sizes]) ** 0.5

@@ -1,7 +1,10 @@
 from vidur.config import ReplicaConfig
 from vidur.entities import BatchStage
 from vidur.entities.request import RequestType
+from vidur.logger import init_logger
 from vidur.utils.param_counter import ParamCounter
+
+logger = init_logger(__name__)
 
 
 # MoE模型列表：这些模型需要区分 prefill/decode 的参数量
@@ -39,11 +42,16 @@ class MFUCalculator:
             self._decode_num_params_per_device = params_result[2]  # Decode参数量 | Decode params
             
             # 打印重要信息便于检查 | Print important info for verification
-            print(f"[MFUCalculator] MoE model PD separation mode (MoE模型 PD分离模式)")
-            print(f"[MFUCalculator] model_name={self._model_name}")
-            print(f"[MFUCalculator] num_params_per_device (total)={self._num_params_per_device / 1024 / 1024 / 1024:.4f} GB")
-            print(f"[MFUCalculator] prefill_num_params_per_device={self._prefill_num_params_per_device / 1024 / 1024 / 1024:.4f} GB")
-            print(f"[MFUCalculator] decode_num_params_per_device={self._decode_num_params_per_device / 1024 / 1024 / 1024:.4f} GB")
+            # TODO(tianhao909): ParamCounter returns memory bytes (not param count) for new models,
+            # causing MFU semantic inconsistency (2*tokens*bytes instead of 2*tokens*params).
+            # This is a known limitation; MFU values for MoE models are approximate.
+            # TODO(tianhao909): 新模型的 ParamCounter 返回内存字节数而非参数个数，
+            # 导致 MFU 语义不一致（2*tokens*bytes 而非 2*tokens*params），MoE 模型的 MFU 为近似值。
+            logger.debug(f"[MFUCalculator] MoE model PD separation mode (MoE模型 PD分离模式)")
+            logger.debug(f"[MFUCalculator] model_name={self._model_name}")
+            logger.debug(f"[MFUCalculator] num_params_per_device (total)={self._num_params_per_device / 1024 / 1024 / 1024:.4f} GB")
+            logger.debug(f"[MFUCalculator] prefill_num_params_per_device={self._prefill_num_params_per_device / 1024 / 1024 / 1024:.4f} GB")
+            logger.debug(f"[MFUCalculator] decode_num_params_per_device={self._decode_num_params_per_device / 1024 / 1024 / 1024:.4f} GB")
         else:
             # 普通模型：返回单个值
             # Normal model: returns single value
@@ -51,9 +59,9 @@ class MFUCalculator:
             self._prefill_num_params_per_device = self._num_params_per_device
             self._decode_num_params_per_device = self._num_params_per_device
             
-            print(f"[MFUCalculator] Normal model mode (普通模型模式)")
-            print(f"[MFUCalculator] model_name={self._model_name}")
-            print(f"[MFUCalculator] num_params_per_device={self._num_params_per_device}")
+            logger.debug(f"[MFUCalculator] Normal model mode (普通模型模式)")
+            logger.debug(f"[MFUCalculator] model_name={self._model_name}")
+            logger.debug(f"[MFUCalculator] num_params_per_device={self._num_params_per_device}")
 
         model_config = replica_config.model_config
 
@@ -128,7 +136,7 @@ class MFUCalculator:
         # 防止除零错误：如果execution_time为0，返回0
         # Prevent division by zero: return 0 if execution_time is 0
         if batch_stage.execution_time == 0:
-            print(f"[WARNING] batch_stage.execution_time is 0, returning MFU as 0")
+            logger.warning(f"batch_stage.execution_time is 0, returning MFU as 0")
             return 0.0
         
         total_flops_per_second = total_flops / batch_stage.execution_time

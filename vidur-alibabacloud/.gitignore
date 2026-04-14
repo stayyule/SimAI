@@ -196,6 +196,7 @@ examples/vidur-ali-scenarios/simulator_output/
 SimAI/
 core.*
 *.csv
+!data/aicb_workload/
 !data/aicb_workload/*.csv
 !data/aicb_workload/cache/
 !data/aicb_workload/cache/*.csv
