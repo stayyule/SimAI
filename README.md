@@ -1,5 +1,5 @@
 <p align="left">
-    <a href="README_CN.md">中文</a>&nbsp ｜ &nbspEnglish
+    <a href="README_CN.md">中文</a>&nbsp ｜ &nbspEnglish&nbsp ｜ &nbsp<a href="README.ja.md">日本語</a>
 </p>
 
 # SimAI
@@ -11,13 +11,10 @@
 
 ### Recent Updates
 
-- [2026/03] **SimAI 1.6 Released!** This release adds GPU memory modeling for inference simulation. Key features include:
-
-  - **GPU Memory Module:** Accurate parameter counting and KV cache management for DeepSeek-V3-671B, Qwen3-MoE-235B, and Qwen3-Next-80B.
-  - **PD-Separation Memory Planning:** Independent parameter memory and KV cache budget calculation for Prefill and Decode phases. See [memory_planner.py](./vidur-alibabacloud/vidur/scheduler/utils/memory_planner.py).
-  - **Improved Decode Time Estimation:** Linear interpolation replacing nearest-neighbor for AICB decode time prediction, with global cache for cross-run reuse. See [execution_time.py](./vidur-alibabacloud/vidur/entities/execution_time.py).
-  - **4-Scenario Test Suite:** End-to-end validation covering Qwen3-Next-80B, DeepSeek-671B, and Qwen3-MoE-235B. See [run_scenarios.sh](./vidur-alibabacloud/examples/vidur-ali-scenarios/run_scenarios.sh).
-  - **Code Quality:** Replaced print with logging, added bilingual docstrings, removed ~390 lines of dead code, standardized TODOs, and added type annotations across vidur-alibabacloud modules.
+- [2026/04] **SimAI 1.6 Released!** Key updates:
+  - GPU memory modeling for inference simulation (parameter counting & KV cache).
+  - Linear interpolation for decode time estimation (replacing nearest-neighbor).
+  - Prefill-Decode Disaggregation memory planning (independent budgets for Prefill/Decode).
 
 - [2025/12] **SimAI 1.5 Released!** This release brings end-to-end simulation for multi-request **inference** workloads. Key features include:
 
@@ -47,7 +44,7 @@
 
 | Date             | Event                                                                    | Location                | Content                                                  | Type          |
 |:----------------:|:------------------------------------------------------------------------ |:----------------------- |:-------------------------------------------------------- |:-------------:|
-| Mar 16, 2026     | SimAI 1.6                                                                | 🌐 Online               | The release of SimAI 1.6                                 | 💻 Virtual    |
+| Apr 23, 2026     | SimAI 1.6                                                                | 🌐 Online               | The release of SimAI 1.6                                 | 💻 Virtual    |
 | Dec 30, 2025     | SimAI 1.5                                                                | 🌐 Online               | The release of SimAI 1.5                                 | 💻 Virtual    |
 | Jun 4, 2025      | The first workshop of the SimAI community                                | 📍 Peking University    | Three talks from community contributors                  | 🎓 On-site    |
 | May 24, 2025     | The 28th Chinasys workshop                                               | 📍 Chongqing University | An invited talk about SimAI                              | 🎓 On-site    |

@@ -1,5 +1,5 @@
 <p align="left">
-    中文&nbsp ｜ &nbsp<a href="README.md">English</a>
+    中文&nbsp ｜ &nbsp<a href="README.md">English</a>&nbsp ｜ &nbsp<a href="README.ja.md">日本語</a>
 </p>
 
 # SimAI
@@ -11,13 +11,10 @@
 
 ### 近期更新
 
-- [2026/03] **SimAI 1.6 正式发布！** 本版本新增推理仿真的 GPU 内存建模能力。主要特性包括：
-
-  - **GPU 内存计算模块：** 支持 DeepSeek-V3-671B、Qwen3-MoE-235B、Qwen3-Next-80B 的精确参数计数与 KV Cache 管理。
-  - **PD 分离内存规划：** Prefill 与 Decode 阶段独立的参数内存和 KV Cache 预算计算。详见 [memory_planner.py](./vidur-alibabacloud/vidur/scheduler/utils/memory_planner.py)。
-  - **Decode 时间估算改进：** 首尾线性插值替代最近邻的 AICB decode 时间预测，全局缓存支持跨运行复用。详见 [execution_time.py](./vidur-alibabacloud/vidur/entities/execution_time.py)。
-  - **4 场景端到端测试：** 覆盖 Qwen3-Next-80B、DeepSeek-671B、Qwen3-MoE-235B 的完整验证套件。详见 [run_scenarios.sh](./vidur-alibabacloud/examples/vidur-ali-scenarios/run_scenarios.sh)。
-  - **代码质量提升：** logging 替换 print 输出、双语 docstring、清理 ~390 行死代码、TODO 规范化、类型标注补全。
+- [2026/04] **SimAI 1.6 正式发布！** 主要更新：
+  - 推理仿真 GPU 显存建模（参数计数与 KV Cache 管理）。
+  - Decode 耗时线性插值估算（替代最近邻查找）。
+  - PD 分离内存规划（Prefill/Decode 独立预算）。
 
 - [2025/12] **SimAI 1.5 正式发布！** 本版本新增对多请求**推理**工作负载的端到端仿真支持，主要特性包括：
 
@@ -46,7 +43,7 @@
 
 | 日期             | 活动                                                                     | 地点                    | 内容                                                     | 形式          |
 |:----------------:|:------------------------------------------------------------------------ |:----------------------- |:-------------------------------------------------------- |:-------------:|
-| Mar 16, 2026     | SimAI 1.6                                                                | 🌐 线上                 | SimAI 1.6 正式发布                                       | 💻 线上直播   |
+| Apr 23, 2026     | SimAI 1.6                                                                | 🌐 线上                 | SimAI 1.6 正式发布                                       | 💻 线上直播   |
 | Dec 30, 2025     | SimAI 1.5                                                                | 🌐 线上                 | SimAI 1.5 正式发布                                       | 💻 线上直播   |
 | Jun 4, 2025      | SimAI 社区第一届研讨会                                                   | 📍 北京大学             | 三场社区贡献者演讲                                       | 🎓 线下       |
 | May 24, 2025     | 第 28 届 Chinasys 研讨会                                                 | 📍 重庆大学             | SimAI 受邀演讲                                           | 🎓 线下       |

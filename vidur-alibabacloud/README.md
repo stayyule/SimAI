@@ -31,7 +31,7 @@ Vidur ([original](https://github.com/microsoft/vidur)) is a simulation framework
 
 ## Key Features
 
-- **Prefill–Decode (PD) Separation** — Enables running the prefill and decode stages on different nodes, allowing elastic resource allocation and performance isolation.
+- **Prefill–Decode (PD) Disaggregation** — Enables running the prefill and decode stages on different nodes, allowing elastic resource allocation and performance isolation.
   (Inspired by [splitwise-sim](https://github.com/Mutinifni/splitwise-sim))
 - **Flexible Parallelism** — Supports:
   - **Data Parallel (DP)**
@@ -332,7 +332,7 @@ The following scenarios are pre-configured in `run_scenarios.sh`. All scenarios 
 - PD P2P bandwidth: 800 Gbps, dtype: fp8
 - Request: Poisson QPS=100, 4 requests, fixed prefill=100 / decode=8 tokens
 
-| Scenario | Model | PD Separation | World Size | TP | PP | EP | Global Scheduler |
+| Scenario | Model | PD Disaggregation | World Size | TP | PP | EP | Global Scheduler |
 |----------|-------|---------------|------------|----|----|------------|------------------|
 | 1 | Qwen3-Next-80B (MoE) | No | 32 (dp=32) | 1 | 1 | auto (=world_size) | lor |
 | 2 | Qwen3-Next-80B (MoE) | Yes (P=2, D=6) | 8 | 1 | 1 | auto (=world_size) | split_wise |
@@ -385,7 +385,7 @@ Each run produces the following directory:
 | `--trace_request_length_generator_config_trace_file` | `data/processed_traces/sharegpt_8k_filtered_stats_llama2_tokenizer.csv` | Path to trace file for request lengths |
 | `--interval_generator_config_type` | poisson | Inter-arrival time generator type |
 | `--cluster_config_num_replicas` | 1 | Total number of replicas (i.e., data parallelism degree) |
-| `--replica_config_pd_node_ratio` | 1 | Fraction of replicas allocated as prefill (P) nodes. 1 = MIXED mode (no PD separation). (0, 1) = PD separation enabled. E.g., 0.5 means P:D = 1:1. |
+| `--replica_config_pd_node_ratio` | 1 | Fraction of replicas allocated as prefill (P) nodes. 1 = MIXED mode (no PD disaggregation). (0, 1) = PD disaggregation enabled. E.g., 0.5 means P:D = 1:1. |
 | `--global_scheduler_config_type` | round_robin | Global scheduler type (`split_wise`, `round_robin`, etc.) |
 | `--replica_scheduler_config_type` | sarathi | Per-replica scheduler type |
 | `--replica_config_model_name` | meta-llama/Llama-2-7b-hf | Model name (DeepSeek-671B, Qwen3-MoE-235B, Qwen3-Next-80B, etc.) |
@@ -397,7 +397,7 @@ Each run produces the following directory:
 | `--random_forrest_execution_time_predictor_config_simai_simulation_topo` | `../example/topo` | Path to SimAI topology file (only effective when backend = `simai_simulation`) |
 | `--random_forrest_execution_time_predictor_config_simai_simulation_config` | `../astra-sim-alibabacloud/inputs/config/SimAI.conf` | Path to SimAI configuration file (only effective when backend = `simai_simulation`) |
 
-### PD Separation Parameters
+### PD Disaggregation Parameters
 
 When `pd_node_ratio` < 1, the following optional parameters become effective:
 
@@ -409,7 +409,7 @@ When `pd_node_ratio` < 1, the following optional parameters become effective:
 | `--replica_config_decode_num_pipeline_stages` | None | Decode-specific PP size. Falls back to `num_pipeline_stages` if not set. |
 | `--replica_config_num_prefill_replicas` | None | Directly specify prefill replica count (takes priority over `pd_node_ratio`). |
 
-**Example: DeepSeek-671B with PD separation (P:D = 2:6)**
+**Example: DeepSeek-671B with PD disaggregation (P:D = 2:6)**
 
 ```bash
 python -m vidur.main \
@@ -461,7 +461,7 @@ Simulation results are saved to:
 **Notes:**
 
 - All time-related fields are in **seconds (s)**, based on monotonic clock or Unix timestamps.
-- In non-PD-separated deployments, `prefill_replica_id` and `decode_replica_id` are typically identical.
+- In non-PD-disaggregated deployments, `prefill_replica_id` and `decode_replica_id` are typically identical.
 - If `request_num_decode_tokens = 0`, `tbt` is undefined (may be recorded as `NaN` or `0`).
 - TBT is not yet logged in `request_metrics.csv`; it can be computed manually for now.
 
